@@ -69,9 +69,9 @@ export async function projectFlowApiRequest(
 export async function getProjects(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
 	const projects = (await projectFlowApiRequest.call(this, 'GET', '/api/v1/projects')) as Array<{
 		id: string;
-		name: string;
+		title: string;
 	}>;
-	return projects.map((p) => ({ name: p.name, value: p.id }));
+	return projects.map((p) => ({ name: p.title, value: p.id }));
 }
 
 /**
@@ -84,10 +84,10 @@ export async function getStatuses(this: ILoadOptionsFunctions): Promise<INodePro
 		this,
 		'GET',
 		`/api/v1/projects/${projectId}`,
-	)) as { statuses?: Array<{ key?: string; id?: string; name: string }> };
+	)) as { statuses?: Array<{ key: string; label: string }> };
 	return (project.statuses ?? []).map((s) => ({
-		name: s.name,
-		value: (s.key ?? s.id ?? s.name) as string,
+		name: s.label,
+		value: s.key,
 	}));
 }
 
