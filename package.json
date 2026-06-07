@@ -1,0 +1,59 @@
+{
+  "name": "n8n-nodes-projectflow",
+  "version": "0.1.0",
+  "description": "n8n community node for ProjectFlow — manage Kanban items, comments, attachments and react to item events.",
+  "keywords": [
+    "n8n-community-node-package",
+    "projectflow",
+    "kanban",
+    "project-management"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "author": {
+    "name": "Denis Graipel"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/denis98/n8n-nodes-projectflow.git"
+  },
+  "engines": {
+    "node": ">=18.10"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && gulp build:icons",
+    "dev": "tsc --watch",
+    "format": "prettier nodes credentials --write",
+    "lint": "eslint nodes credentials package.json",
+    "lintfix": "eslint nodes credentials package.json --fix",
+    "prepublishOnly": "npm run build && eslint -c .eslintrc.prepublish.js nodes credentials package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/ProjectFlowTokenApi.credentials.js",
+      "dist/credentials/ProjectFlowOAuth2Api.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/ProjectFlow/ProjectFlow.node.js",
+      "dist/nodes/ProjectFlow/ProjectFlowTrigger.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.130",
+    "@typescript-eslint/parser": "^7.15.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-n8n-nodes-base": "^1.16.1",
+    "gulp": "^5.0.0",
+    "n8n-workflow": "*",
+    "prettier": "^3.3.2",
+    "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}
