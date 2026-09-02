@@ -1,7 +1,7 @@
 {
   "name": "n8n-nodes-projectflow",
-  "version": "0.1.1",
-  "description": "n8n community node for ProjectFlow — manage Kanban items, comments, attachments and react to item events.",
+  "version": "0.2.0",
+  "description": "n8n community node for ProjectFlow \u2014 items, comments, attachments, channels, discussions, wiki, time tracking and initiatives",
   "keywords": [
     "n8n-community-node-package",
     "projectflow",

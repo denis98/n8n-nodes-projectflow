@@ -72,10 +72,17 @@ export class ProjectFlowTrigger implements INodeType {
 				required: true,
 				default: ['item.created'],
 				options: [
+					// Alphabetical, as n8n's lint requires. Resolved and Reopened were
+					// missing until 0.2.0, so a workflow could not react to FEAT-183's
+					// resolution flow — and a new webhook event is the declared
+					// extension path for automation, which makes a stale event list the
+					// one thing here that must not happen.
 					{ name: 'Item Created', value: 'item.created' },
-					{ name: 'Item Updated', value: 'item.updated' },
-					{ name: 'Item Moved', value: 'item.moved' },
 					{ name: 'Item Deleted', value: 'item.deleted' },
+					{ name: 'Item Moved', value: 'item.moved' },
+					{ name: 'Item Reopened', value: 'item.reopened' },
+					{ name: 'Item Resolved', value: 'item.resolved' },
+					{ name: 'Item Updated', value: 'item.updated' },
 				],
 			},
 		],
