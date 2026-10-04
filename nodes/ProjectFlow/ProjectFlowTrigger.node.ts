@@ -76,13 +76,30 @@ export class ProjectFlowTrigger implements INodeType {
 					// missing until 0.2.0, so a workflow could not react to FEAT-183's
 					// resolution flow — and a new webhook event is the declared
 					// extension path for automation, which makes a stale event list the
-					// one thing here that must not happen.
+					// one thing here that must not happen. 0.3.0 follows the server's
+					// catalog (FEAT-484): comments, assignment, wiki, discussions, time
+					// entries, canvases. Comment and discussion text is in the payload,
+					// and only this project's webhooks get it.
+					{ name: 'Canvas Created', value: 'canvas.created' },
+					{ name: 'Canvas Deleted', value: 'canvas.deleted' },
+					{ name: 'Canvas Updated', value: 'canvas.updated' },
+					{ name: 'Comment Created', value: 'comment.created' },
+					{ name: 'Comment Deleted', value: 'comment.deleted' },
+					{ name: 'Comment Updated', value: 'comment.updated' },
+					{ name: 'Discussion Created', value: 'discussion.created' },
+					{ name: 'Discussion Replied', value: 'discussion.replied' },
+					{ name: 'Item Assigned', value: 'item.assigned' },
 					{ name: 'Item Created', value: 'item.created' },
 					{ name: 'Item Deleted', value: 'item.deleted' },
 					{ name: 'Item Moved', value: 'item.moved' },
 					{ name: 'Item Reopened', value: 'item.reopened' },
 					{ name: 'Item Resolved', value: 'item.resolved' },
 					{ name: 'Item Updated', value: 'item.updated' },
+					{ name: 'Time Entry Created', value: 'worklog.created' },
+					{ name: 'Wiki Page Created', value: 'wiki.created' },
+					{ name: 'Wiki Page Deleted', value: 'wiki.deleted' },
+					{ name: 'Wiki Page Published', value: 'wiki.published' },
+					{ name: 'Wiki Page Updated', value: 'wiki.updated' },
 				],
 			},
 		],
