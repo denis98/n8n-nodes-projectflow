@@ -105,6 +105,14 @@ The **ProjectFlow Trigger** node registers a webhook on the selected project whe
 - `item.deleted`
 - `item.resolved`
 - `item.reopened`
+- `item.assigned` (the assignee changed; fires in addition to `item.updated`)
+- `comment.created`, `comment.updated`, `comment.deleted`
+- `wiki.created`, `wiki.updated`, `wiki.published`, `wiki.deleted` (`wiki.updated` fires on title, tag, owner or restore changes, not on every autosave of the text; use `wiki.published` for finished versions)
+- `discussion.created`, `discussion.replied` (project channels only; channels without a project reach no project webhook)
+- `worklog.created`
+- `canvas.created`, `canvas.updated`, `canvas.deleted`
+
+Comment and discussion text is part of the payload and is sent to this webhook. Every delivery carries a `changes` array next to `data` where the event knows what changed.
 
 Incoming deliveries are verified via the `X-Webhook-Signature` header (HMAC-SHA256 of the body using the per-webhook secret).
 
