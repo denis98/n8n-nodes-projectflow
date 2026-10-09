@@ -1,6 +1,6 @@
 # n8n-nodes-projectflow
 
-This is an n8n community node package for **ProjectFlow**, a lean Kanban-based project management tool. It lets you manage items, comments, attachments, discussion channels, wiki pages, time entries and initiatives, and react to item events from your n8n workflows.
+This is an n8n community node package for **ProjectFlow**, a lean Kanban-based project management tool. It lets you manage items, comments, attachments, discussion channels, wiki pages, time entries and initiatives, and react to project events from your n8n workflows.
 
 [n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
@@ -111,8 +111,12 @@ The **ProjectFlow Trigger** node registers a webhook on the selected project whe
 - `discussion.created`, `discussion.replied` (project channels only; channels without a project reach no project webhook)
 - `worklog.created`
 - `canvas.created`, `canvas.updated`, `canvas.deleted`
+- `member.added`, `member.removed`, `member.roleChanged`
+- `project.ownerChanged`, `project.moved`, `project.archived`, `project.restored`
 
 Comment and discussion text is part of the payload and is sent to this webhook. Every delivery carries a `changes` array next to `data` where the event knows what changed.
+
+The trigger outputs the complete event envelope (`event`, `timestamp`, `projectId`, `data`, and optional `changes`). The shape of `data` depends on the event: membership events identify the project and `userId`; member addition and role changes include `role`, and role changes also include `previousRole`. They do not contain an item ID or title. Branch on `event` before reading entity-specific fields. For example, **Member Added** (`member.added`) can start an onboarding workflow using `data.userId` and `data.role`.
 
 Incoming deliveries are verified via the `X-Webhook-Signature` header (HMAC-SHA256 of the body using the per-webhook secret).
 
@@ -132,3 +136,45 @@ Incoming deliveries are verified via the `X-Webhook-Signature` header (HMAC-SHA2
 ## License
 
 [MIT](LICENSE)
+
+## Development checks
+
+```bash
+npm run build
+npm run lint
+npm test
+```
+
+To compare the trigger options with the backend's current `WEBHOOK_EVENTS` catalog:
+
+```bash
+npm run check:events -- --backend /path/to/kanban/backend
+```
+
+The check reads the catalog's TypeScript source, including its `WEBHOOK_EVENT_TYPES` list. It reports both missing and unsupported options and does not require a running backend.
+
+### Local n8n delivery check
+
+The optional live check runs the installed node in a dedicated n8n instance and creates an isolated ProjectFlow test backend with an in-memory database. It registers the real webhook using a personal token, accepts a real project invitation and verifies `member.added` in the saved n8n execution and the following node. Deactivation must remove the webhook.
+
+```bash
+npm run build
+docker run -d --name projectflow-n8n-local-test \
+  -p 127.0.0.1:5679:5678 \
+  -e N8N_SECURE_COOKIE=false \
+  -e WEBHOOK_URL=http://n8n.feat550.example:5679/ \
+  -e N8N_EDITOR_BASE_URL=http://localhost:5679 \
+  -e N8N_DIAGNOSTICS_ENABLED=false \
+  -e N8N_VERSION_NOTIFICATIONS_ENABLED=false \
+  -e N8N_TEMPLATES_ENABLED=false \
+  -v projectflow-n8n-local-test-data:/home/node/.n8n \
+  -v "$PWD/dist:/home/node/.n8n/custom:ro" \
+  n8nio/n8n:2.42.5
+# Wait until http://localhost:5679/healthz reports ok.
+npm run test:live -- --backend /path/to/kanban/backend --n8n http://localhost:5679
+# Remove only the dedicated test instance and its data after the check.
+docker rm -f projectflow-n8n-local-test
+docker volume rm projectflow-n8n-local-test-data
+```
+
+The backend's integration-test dependencies must be installed; port 5501 must be free. Use a dedicated n8n test instance: the fixture sets up its own local test account and credentials. n8n activation and deactivation are polled because publication can be asynchronous. The test maps the logical `n8n.feat550.example` webhook destination to local n8n **only inside the fixture's network adapter**. Production URL validation and private-IP protection are unchanged. A successful run writes the event envelope, execution status and webhook cleanup evidence to `/tmp/feat550-live-result.json`; it contains no token or webhook secret.

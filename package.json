@@ -1,7 +1,7 @@
 {
   "name": "n8n-nodes-projectflow",
   "version": "0.3.0",
-  "description": "n8n community node for ProjectFlow \u2014 items, comments, attachments, channels, discussions, wiki, time tracking and initiatives",
+  "description": "n8n community node for ProjectFlow — items, comments, attachments, channels, discussions, wiki, time tracking and initiatives",
   "keywords": [
     "n8n-community-node-package",
     "projectflow",
@@ -27,7 +27,10 @@
     "format": "prettier nodes credentials --write",
     "lint": "eslint nodes credentials package.json",
     "lintfix": "eslint nodes credentials package.json --fix",
-    "prepublishOnly": "npm run build && eslint -c .eslintrc.prepublish.js nodes credentials package.json"
+    "prepublishOnly": "npm run build && eslint -c .eslintrc.prepublish.js nodes credentials package.json",
+    "test": "npm run build && node --test tests/*.test.cjs",
+    "check:events": "npm run build && node scripts/check-events.cjs",
+    "test:live": "node scripts/check-live.cjs"
   },
   "files": [
     "dist"
